@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jardim Encantado da Luna</title>
+<meta property="og:title" content="Jardim Encantado da Luna">
+<meta property="og:description" content="Toque para abrir o convite.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://creativyconvites.com.br/Lunaconvite/capa-og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<style>
+/* Layout: palco 9:16 que cabe em qualquer tela; os botões são áreas transparentes sobre a arte, posicionadas em % do palco */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#2a1730;font-family:system-ui,sans-serif}
+body{position:fixed;inset:0;-webkit-tap-highlight-color:transparent}
+.bg{position:absolute;inset:-6%;background:center/cover no-repeat;filter:blur(26px) brightness(.8);transform:scale(1.1)}
+.stage{position:absolute;top:50%;left:50%;height:100dvh;width:calc(100dvh*9/16);max-width:100vw;max-height:calc(100vw*16/9);transform:translate(-50%,-50%);overflow:hidden;box-shadow:0 0 60px #0008}
+.tela{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .7s ease,transform .7s ease,visibility 0s .7s}
+.tela.on{opacity:1;visibility:visible;transition:opacity .7s ease,transform .7s ease}
+.tela img.arte{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
+#capa{cursor:pointer}
+#capa.saindo{opacity:0;transform:scale(1.12)}
+/* botão de toque */
+.hit{position:absolute;display:block;border-radius:999px;cursor:pointer;border:0;background:transparent;outline:none;-webkit-appearance:none;appearance:none;text-decoration:none;overflow:hidden;transition:transform .15s,box-shadow .2s,background .2s}
+.hit::after{content:"";position:absolute;top:-20%;bottom:-20%;width:34%;left:-50%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);transform:skewX(-18deg);animation:brilho 3.6s ease-in-out infinite}
+.hit:nth-of-type(2)::after{animation-delay:.5s}.hit:nth-of-type(3)::after{animation-delay:1s}
+@keyframes brilho{0%,55%{left:-50%}100%{left:130%}}
+.hit:hover{background:rgba(255,255,255,.12);box-shadow:0 0 22px rgba(255,214,235,.8)}
+.hit:active{transform:scale(.96);background:rgba(255,255,255,.22)}
+.hit:focus-visible{box-shadow:0 0 0 3px #fff,0 0 22px #e993b9}
+/* capa: pílula "Clique na Luna" pulsando */
+#toque{left:21%;top:90.6%;width:58%;height:5.2%}
+#toque{animation:pulsa 1.8s ease-in-out infinite}
+@keyframes pulsa{0%,100%{box-shadow:0 0 0 0 rgba(255,200,225,.0)}50%{box-shadow:0 0 0 10px rgba(255,200,225,.45)}}
+/* informações */
+#b1{left:23.6%;top:61.2%;width:51.6%;height:6.3%}
+#b2{left:23.6%;top:69%;width:51.6%;height:6.3%}
+#b3{left:23.6%;top:76.6%;width:51.6%;height:6.3%}
+/* presentes */
+#presentes{z-index:5}
+#fechar{position:absolute;right:5%;top:3.2%;width:11%;aspect-ratio:1;border-radius:50%;border:2px solid #fff;background:rgba(110,50,90,.55);color:#fff;font:700 clamp(18px,5.5vw,28px)/1 system-ui;display:grid;place-items:center;cursor:pointer;z-index:6;backdrop-filter:blur(4px)}
+/* faíscas */
+.fx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sp{position:absolute;width:8px;height:8px;border-radius:50%;background:radial-gradient(#fff,#ffe9a8 45%,transparent 70%);opacity:0;animation:tw 4s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:.95;transform:scale(1.2)}}
+/* aviso */
+#aviso{position:absolute;left:8%;right:8%;bottom:4%;z-index:8;padding:12px 16px;border-radius:16px;background:#fff3f8;color:#7a3a5c;font:600 14px/1.4 system-ui;text-align:center;box-shadow:0 10px 24px #0007;opacity:0;pointer-events:none;transform:translateY(10px);transition:.3s}
+#aviso.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.hit::after,#toque,.sp{animation:none}.tela,.tela.on{transition:none}}
+</style>
+</head>
+<body>
+<div class="bg" id="bg"></div>
+
+<div class="stage" id="stage">
+
+  <!-- Tela 1: capa. Toque em qualquer lugar (ou na pílula "Clique na Luna") para abrir -->
+  <section class="tela on" id="capa" aria-label="Capa do convite, toque para abrir">
+    <img class="arte" src="capaluna.png" alt="Jardim Encantado da Luna. Clique na Luna.">
+    <div class="fx" id="fx"></div>
+    <button class="hit" id="toque" type="button" aria-label="Clique na Luna para abrir o convite"></button>
+  </section>
+
+  <!-- Tela 2: informações -->
+  <section class="tela" id="info" aria-label="Informações do convite">
+    <img class="arte" src="infosluna.png" alt="Convite: 20 de setembro, às 18 horas">
+    <a class="hit" id="b1" href="#" target="_blank" rel="noopener" aria-label="Confirmar presença"></a>
+    <a class="hit" id="b2" href="#" target="_blank" rel="noopener" aria-label="Localização"></a>
+    <button class="hit" id="b3" type="button" aria-label="Dicas de presente"></button>
+  </section>
+
+  <!-- Tela 3: dicas de presente -->
+  <section class="tela" id="presentes" aria-label="Dicas de presente">
+    <img class="arte" src="presentesluna.png" alt="Dicas de presente: roupas tamanho P, sapato número 28 e brinquedos">
+    <button id="fechar" type="button" aria-label="Voltar ao convite">✕</button>
+  </section>
+
+  <div id="aviso" role="status"></div>
+</div>
+
+<script>
+/* ====== CONFIGURAÇÕES: troque aqui ====== */
+var CONFIG = {
+  /* WhatsApp de quem recebe as confirmações: DDI+DDD+número, só números. Ex.: 5585999999999 */
+  whatsapp: '5585996354515',
+  mensagemConfirmacao: 'Olá! Confirmo a minha presença no Jardim Encantado da Luna! 🌸',
+  /* Link do Google Maps do local da festa (cole o link de compartilhar). Se ficar vazio, o botão avisa "em breve". */
+  mapa: ''
+};
+/* ======================================== */
+
+var $=function(id){return document.getElementById(id)};
+var capa=$('capa'),info=$('info'),pres=$('presentes'),aviso=$('aviso');
+
+/* fundo desfocado atrás do palco, para telas largas */
+$('bg').style.backgroundImage='url(capaluna.png)';
+
+/* como as imagens são pesadas, baixa as outras telas em segundo plano enquanto a capa é vista */
+window.addEventListener('load',function(){['infosluna.png','presentesluna.png'].forEach(function(f){var i=new Image();i.src=f})});
+
+/* faíscas na capa */
+(function(){var fx=$('fx');for(var i=0;i<18;i++){var s=document.createElement('i');s.className='sp';s.style.left=(Math.random()*96+2)+'%';s.style.top=(Math.random()*88+2)+'%';s.style.animationDelay=(Math.random()*4).toFixed(2)+'s';s.style.animationDuration=(3+Math.random()*3).toFixed(1)+'s';fx.appendChild(s)}})();
+
+function msg(t){aviso.textContent=t;aviso.classList.add('on');clearTimeout(msg.t);msg.t=setTimeout(function(){aviso.classList.remove('on')},3200)}
+
+/* capa -> informações */
+function abrir(){
+  if(capa.dataset.ok)return;capa.dataset.ok=1;
+  capa.classList.add('saindo');capa.classList.remove('on');
+  setTimeout(function(){info.classList.add('on')},250);
+  if(navigator.vibrate)try{navigator.vibrate(20)}catch(e){}
+}
+capa.addEventListener('click',abrir);
+capa.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')abrir()});
+
+/* botões */
+$('b1').href='https://wa.me/'+CONFIG.whatsapp+'?text='+encodeURIComponent(CONFIG.mensagemConfirmacao);
+if(CONFIG.mapa){$('b2').href=CONFIG.mapa}
+else{$('b2').addEventListener('click',function(e){e.preventDefault();msg('A localização será informada em breve 💜')})}
+$('b3').addEventListener('click',function(){pres.classList.add('on')});
+$('fechar').addEventListener('click',function(){pres.classList.remove('on')});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')pres.classList.remove('on')});
+</script>
+</body>
+</html>
